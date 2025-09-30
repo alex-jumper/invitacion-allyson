@@ -1,179 +1,209 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Invitación Allyson</title>
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #f8f5ff;
-    font-family: "Georgia", serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  <meta charset="UTF-8">
+  <title>Invitación Allyson</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+      background: #f8f5ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Georgia", serif;
+      overflow: hidden;
+      background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
 
-  body {
-    background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 25px 25px;
-  }
+    /* Contenedor del sobre */
+    .intro-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease;
+      width: 100%;
+      height: 100%;
+    }
 
-  /* Pantalla inicial con sobre */
-  .intro-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    transition: opacity 0.5s ease;
-  }
+    .envelope {
+      width: 80vw;
+      max-width: 500px;
+      aspect-ratio: 4/3;
+      background-image: url('4.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-bottom: 20px;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
 
-  .envelope {
-    width: 80vw;
-    max-width: 500px;
-    height: auto;
-    aspect-ratio: 4/3;
-    background-image: url('4.jpg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin-bottom: 20px;
-    transition: transform 0.6s ease, opacity 0.6s ease;
-  }
+    .btn-open {
+      padding: 12px 28px;
+      background: linear-gradient(90deg, #b388ff, #7c4dff);
+      color: white;
+      font-size: 20px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
 
-  .btn-open {
-    padding: 12px 28px;
-    background: linear-gradient(90deg,#b388ff,#7c4dff);
-    color: white;
-    font-size: 20px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: transform 0.3s;
-  }
+    .btn-open:hover {
+      transform: scale(1.1);
+    }
 
-  .btn-open:hover {
-    transform: scale(1.1);
-  }
+    /* Contenedor del libro */
+    .book-container {
+      width: 90vw;
+      max-width: 700px;
+      height: 90vh;
+      max-height: 500px;
+      perspective: 2000px;
+      position: relative;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
-  /* Contenedor libro */
-  .book-container {
-    width: 100vw;
-    height: 100vh;
-    perspective: 2000px;
-    position: relative;
-    display: none;
-  }
+    .book {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+    }
 
-  .book {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-  }
+    .page {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      backface-visibility: hidden;
+      border-radius: 5px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transform: rotateY(0deg);
+      transition: transform 1s ease;
+    }
 
-  .page {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transform-origin: left;
-    backface-visibility: hidden;
-    transform: rotateY(180deg);
-  }
+    .btn {
+      margin-top: 10px;
+      padding: 12px 28px;
+      background: linear-gradient(90deg, #b388ff, #7c4dff);
+      color: white;
+      font-size: 20px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+      z-index: 10;
+    }
 
-  .btn {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 12px 28px;
-    background: linear-gradient(90deg,#b388ff,#7c4dff);
-    color: white;
-    font-size: 20px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: transform 0.3s;
-    z-index: 100;
-  }
+    .btn:hover {
+      transform: scale(1.1);
+    }
 
-  .btn:hover {
-    transform: translateX(-50%) scale(1.1);
-  }
+    /* Chispas */
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: gold;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkle 1.5s linear infinite;
+      opacity: 0;
+    }
 
-  .sparkle {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    background: gold;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: sparkle 1.5s linear infinite;
-    opacity: 0;
-  }
+    @keyframes sparkle {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.8; }
+      100% { transform: scale(0); opacity: 0; }
+    }
 
-  @keyframes sparkle {
-    0% { transform: scale(0); opacity: 1; }
-    50% { transform: scale(1.5); opacity: 0.8; }
-    100% { transform: scale(0); opacity: 0; }
-  }
-</style>
+    @media (max-width: 480px) {
+      .btn-open, .btn {
+        font-size: 16px;
+        padding: 10px 22px;
+      }
+      .book-container {
+        height: 95vh;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Sobre -->
 <div class="intro-container" id="intro">
   <div class="envelope"></div>
   <button class="btn-open" id="openBtn">Abrir invitación</button>
 </div>
 
-<!-- Libro -->
 <div class="book-container" id="bookContainer">
   <div class="book" id="book">
-    <div class="page" style="background-image:url('1.png')"></div>
-    <div class="page" style="background-image:url('2.png')"></div>
-    <div class="page" style="background-image:url('3.png')"></div>
+    <div class="page" id="page1" style="background-image: url('1.png');"></div>
+    <div class="page" id="page2" style="background-image: url('2.png');"></div>
+    <div class="page" id="page3" style="background-image: url('3.png');"></div>
   </div>
   <button class="btn" id="btn">Siguiente</button>
 </div>
 
 <script>
-const intro = document.getElementById('intro');
-const openBtn = document.getElementById('openBtn');
-const bookContainer = document.getElementById('bookContainer');
-const book = document.getElementById('book');
-const pages = Array.from(book.getElementsByClassName('page'));
-const btn = document.getElementById('btn');
+  const intro = document.getElementById('intro');
+  const openBtn = document.getElementById('openBtn');
+  const bookContainer = document.getElementById('bookContainer');
+  const pages = document.querySelectorAll('.page');
+  const btn = document.getElementById('btn');
 
-let currentPage = 0;
+  let currentPage = 0;
 
-// Mostrar libro
-openBtn.addEventListener('click', () => {
-  intro.style.opacity = 0;
-  setTimeout(() => {
-    intro.style.display = 'none';
-    bookContainer.style.display = 'block';
+  // Ocultar todas menos la primera
+  pages.forEach((page, index) => {
+    if(index !== 0) page.style.transform = 'rotateY(180deg)';
+  });
 
-    // Mostrar primera página
-    pages.forEach((p,i) => {
-      p.style.transition = "transform 0.8s ease";
-      p.style.transform = i === 0 ? "rotateY(0deg)" : "rotateY(180deg)";
-      p.style.zIndex = pages.length - i;
-    });
+  openBtn.addEventListener('click', () => {
+    intro.style.opacity = 0;
+    setTimeout(() => {
+      intro.style.display = 'none';
+      bookContainer.style.display = 'flex';
 
-    // Chispas
-    for (let i = 0; i < 30; i++) {
+      // Chispas
+      for (let i = 0; i < 30; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.left = Math.random() * window.innerWidth + "px";
+        sparkle.style.top = Math.random() * window.innerHeight + "px";
+        sparkle.style.animationDuration = (1 + Math.random()) + "s";
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 2000);
+      }
+    }, 500);
+  });
+
+  btn.addEventListener('click', () => {
+    if(currentPage < pages.length - 1){
+      pages[currentPage].style.transform = 'rotateY(-180deg)'; // gira actual
+      currentPage++;
+      pages[currentPage].style.transform = 'rotateY(0deg)'; // gira siguiente
+    } else {
+      // Reiniciar libro
+      pages[currentPage].style.transform = 'rotateY(-180deg)';
+      currentPage = 0;
+      pages[currentPage].style.transform = 'rotateY(0deg)';
+    }
+
+    // Chispas al pasar página
+    for (let i = 0; i < 15; i++) {
       const sparkle = document.createElement("div");
       sparkle.className = "sparkle";
       sparkle.style.left = Math.random() * window.innerWidth + "px";
@@ -182,41 +212,7 @@ openBtn.addEventListener('click', () => {
       document.body.appendChild(sparkle);
       setTimeout(() => sparkle.remove(), 2000);
     }
-  },500);
-});
-
-// Pasar página
-btn.addEventListener('click', () => {
-  if(currentPage < pages.length - 1) {
-    const page = pages[currentPage];
-    const nextPage = pages[currentPage+1];
-
-    nextPage.style.transform = "rotateY(0deg)";
-    nextPage.style.zIndex = pages.length;
-
-    page.style.transform = "rotateY(-180deg)";
-    page.style.zIndex = pages.length - currentPage - 1;
-
-    currentPage++;
-
-    for (let i = 0; i < 15; i++) {
-      const sparkle = document.createElement("div");
-      sparkle.className = "sparkle";
-      sparkle.style.left = Math.random() * window.innerWidth + "px";
-      sparkle.style.top = Math.random() * window.innerHeight + "px";
-      sparkle.style.animationDuration = (0.8 + Math.random()) + "s";
-      document.body.appendChild(sparkle);
-      setTimeout(() => sparkle.remove(), 2000);
-    }
-  } else {
-    // Reiniciar
-    pages.forEach((p,i)=>{
-      p.style.transform = i===0?"rotateY(0deg)":"rotateY(180deg)";
-      p.style.zIndex = pages.length - i;
-    });
-    currentPage = 0;
-  }
-});
+  });
 </script>
 
 </body>
