@@ -16,6 +16,10 @@
     justify-content: center;
     align-items: center;
   }
+  body {
+    background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
 
   .intro-container {
     display: flex;
@@ -26,16 +30,16 @@
     height: 100%;
     transition: opacity 0.5s ease;
   }
-
   .envelope {
     width: 100%;
     height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     background-image: url('4.jpg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
   }
-
   .btn-open {
     position: absolute;
     bottom: 10%;
@@ -51,9 +55,8 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     animation: pulse 1.2s infinite;
   }
-
   @keyframes pulse {
-    0%, 100% { transform: translateX(-50%) scale(1); }
+    0%,100% { transform: translateX(-50%) scale(1); }
     50% { transform: translateX(-50%) scale(1.1); }
   }
 
@@ -64,14 +67,12 @@
     position: relative;
     display: none;
   }
-
   .book {
     width: 100%;
     height: 100%;
     position: relative;
     transform-style: preserve-3d;
   }
-
   .page {
     position: absolute;
     width: 100%;
@@ -85,7 +86,6 @@
     backface-visibility: hidden;
     transform: rotateY(180deg);
   }
-
   .btn {
     position: absolute;
     bottom: 8%;
@@ -103,29 +103,31 @@
     z-index: 100;
   }
 
-  /* Capa de mariposas */
-  .butterfly-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 999;
-    overflow: hidden;
-  }
-
   .butterfly {
     position: absolute;
     width: 50px;
-    animation: fly 5s ease-in-out forwards;
+    height: 50px;
+    background-image: url('mariposa.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 200;
   }
 
-  @keyframes fly {
-    0%   { transform: translateY(100vh) translateX(0) scale(0.6); opacity: 1; }
-    40%  { transform: translateY(60vh) translateX(-80px) scale(0.9) rotate(-10deg); opacity: 1; }
-    70%  { transform: translateY(40vh) translateX(80px) scale(1); opacity: 1; }
-    100% { transform: translateY(20vh) translateX(0) scale(1.2); opacity: 0; }
+  .sparkle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: gold;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkle 1.5s linear infinite;
+    opacity: 0;
+  }
+  @keyframes sparkle {
+    0% { transform: scale(0); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.8; }
+    100% { transform: scale(0); opacity: 0; }
   }
 </style>
 </head>
@@ -145,8 +147,7 @@
   <button class="btn" id="btn">Siguiente</button>
 </div>
 
-<!-- Capa para mariposas -->
-<div class="butterfly-layer" id="butterflyLayer"></div>
+<audio id="audio" src="musica.mp3" preload="auto"></audio>
 
 <script>
 const intro = document.getElementById('intro');
@@ -155,12 +156,15 @@ const bookContainer = document.getElementById('bookContainer');
 const book = document.getElementById('book');
 const pages = Array.from(book.getElementsByClassName('page'));
 const btn = document.getElementById('btn');
-const butterflyLayer = document.getElementById('butterflyLayer');
+const audio = document.getElementById('audio');
 
 let currentPage = 0;
 
-// Mostrar libro + mariposas
+// Mostrar libro + pop + mariposas
 openBtn.addEventListener('click', () => {
+  const pop = new Audio('pop.mp3');
+  pop.play();
+
   intro.style.opacity = 0;
   setTimeout(() => {
     intro.style.display = 'none';
@@ -168,48 +172,86 @@ openBtn.addEventListener('click', () => {
 
     pages.forEach((p,i) => {
       p.style.transition = "transform 0.8s ease";
-      p.style.transform = i === 0 ? "rotateY(0deg)" : "rotateY(180deg)";
+      p.style.transform = i===0?"rotateY(0deg)":"rotateY(180deg)";
       p.style.zIndex = pages.length - i;
     });
 
-    lanzarMariposas(20);
+    // Reproducir música
+    audio.play();
+
+    // Chispas
+    for(let i=0;i<30;i++){
+      const sparkle = document.createElement("div");
+      sparkle.className="sparkle";
+      sparkle.style.left=Math.random()*window.innerWidth+"px";
+      sparkle.style.top=Math.random()*window.innerHeight+"px";
+      sparkle.style.animationDuration=(1+Math.random())+"s";
+      document.body.appendChild(sparkle);
+      setTimeout(()=>sparkle.remove(),2000);
+    }
+
+    // Mariposas que vuelan de abajo hacia arriba y desaparecen
+    const butterflyContainer = document.body;
+    for(let i=0;i<60;i++){
+      const butterfly=document.createElement('div');
+      butterfly.className='butterfly';
+      butterflyContainer.appendChild(butterfly);
+
+      const startX = Math.random()*window.innerWidth;
+      const startY = window.innerHeight + 50;
+      butterfly.style.left = startX+'px';
+      butterfly.style.top = startY+'px';
+      butterfly.style.opacity = 1;
+
+      const endY = -100;
+      const duration = 3000 + Math.random()*1500;
+      const start = performance.now();
+
+      function animate(time){
+        const elapsed = time - start;
+        const progress = Math.min(elapsed/duration,1);
+        butterfly.style.top = startY + (endY-startY)*progress + 'px';
+        if(progress < 1){
+          requestAnimationFrame(animate);
+        } else {
+          butterfly.remove();
+        }
+      }
+      setTimeout(()=>requestAnimationFrame(animate), i*150); // retraso entre cada mariposa
+    }
+
   },500);
 });
 
 // Pasar página
 btn.addEventListener('click', () => {
-  if(currentPage < pages.length - 1) {
-    const page = pages[currentPage];
-    const nextPage = pages[currentPage+1];
-
-    nextPage.style.transform = "rotateY(0deg)";
-    nextPage.style.zIndex = pages.length;
-
-    page.style.transform = "rotateY(-180deg)";
-    page.style.zIndex = pages.length - currentPage - 1;
-
+  if(currentPage<pages.length-1){
+    const page=pages[currentPage];
+    const nextPage=pages[currentPage+1];
+    nextPage.style.transform="rotateY(0deg)";
+    nextPage.style.zIndex=pages.length;
+    page.style.transform="rotateY(-180deg)";
+    page.style.zIndex=pages.length - currentPage - 1;
     currentPage++;
-  } else {
+
+    for(let i=0;i<15;i++){
+      const sparkle=document.createElement("div");
+      sparkle.className="sparkle";
+      sparkle.style.left=Math.random()*window.innerWidth+"px";
+      sparkle.style.top=Math.random()*window.innerHeight+"px";
+      sparkle.style.animationDuration=(0.8+Math.random())+"s";
+      document.body.appendChild(sparkle);
+      setTimeout(()=>sparkle.remove(),2000);
+    }
+
+  }else{
     pages.forEach((p,i)=>{
-      p.style.transform = i===0?"rotateY(0deg)":"rotateY(180deg)";
-      p.style.zIndex = pages.length - i;
+      p.style.transform=i===0?"rotateY(0deg)":"rotateY(180deg)";
+      p.style.zIndex=pages.length-i;
     });
-    currentPage = 0;
+    currentPage=0;
   }
 });
-
-// Mariposas
-function lanzarMariposas(cantidad) {
-  for (let i = 0; i < cantidad; i++) {
-    const b = document.createElement("img");
-    b.src = "mariposa.png"; // <- Ahora usa este nombre
-    b.className = "butterfly";
-    b.style.left = Math.random() * window.innerWidth + "px";
-    b.style.animationDuration = (4 + Math.random()*2) + "s";
-    butterflyLayer.appendChild(b);
-    setTimeout(() => b.remove(), 6000);
-  }
-}
 </script>
 
 </body>
