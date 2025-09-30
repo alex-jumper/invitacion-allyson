@@ -23,16 +23,17 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      height: 100%;
       opacity: 1;
       transition: opacity 0.5s ease;
     }
 
     /* Sobre */
     .envelope {
-      width: 60vw;       /* más grande en móvil */
+      width: 80vw;       /* ocupa gran parte de la pantalla */
       height: auto;
-      max-width: 400px;  /* límite en pantallas grandes */
-      aspect-ratio: 4/3;
+      aspect-ratio: 4/3; /* mantiene proporción */
       background-image: url('4.jpg');
       background-size: contain;
       background-repeat: no-repeat;
@@ -44,10 +45,10 @@
 
     /* Botón abrir */
     .btn-open {
-      padding: 12px 28px;
+      padding: 14px 32px;
       background: linear-gradient(90deg, #b388ff, #7c4dff);
       color: white;
-      font-size: 20px;
+      font-size: 22px;
       border: none;
       border-radius: 30px;
       cursor: pointer;
@@ -62,9 +63,7 @@
     /* Contenedor del libro */
     .book-container {
       width: 90vw;   /* ocupa casi todo el ancho */
-      height: 70vh;  /* proporcional a la pantalla */
-      max-width: 700px;
-      max-height: 500px;
+      height: 90vh;  /* ocupa casi todo el alto */
       perspective: 2000px;
       position: relative;
       opacity: 0;
@@ -95,13 +94,13 @@
       left: 0;
       top: 0;
       background-image: url("1.png");
-      background-size: cover;
+      background-size: contain;
       background-position: center;
+      background-repeat: no-repeat;
       transform-origin: left;
       backface-visibility: hidden;
       z-index: 3;
       transition: transform 1.5s ease;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       border-radius: 5px;
     }
 
@@ -113,12 +112,12 @@
       left: 0;
       top: 0;
       background-image: url("2.png");
-      background-size: cover;
+      background-size: contain;
       background-position: center;
+      background-repeat: no-repeat;
       transform-origin: right;
       backface-visibility: hidden;
       transform: rotateY(0deg);
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
       border-radius: 5px;
     }
 
@@ -130,25 +129,25 @@
       right: 0;
       top: 0;
       background-image: url("3.png");
-      background-size: cover;
+      background-size: contain;
       background-position: center;
+      background-repeat: no-repeat;
       transform-origin: left;
       backface-visibility: hidden;
       transform: rotateY(0deg);
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
       border-radius: 5px;
     }
 
     /* Botón libro */
     .btn {
       position: absolute;
-      bottom: -60px;
+      bottom: -70px;
       left: 50%;
       transform: translateX(-50%);
-      padding: 12px 28px;
+      padding: 14px 32px;
       background: linear-gradient(90deg, #b388ff, #7c4dff);
       color: white;
-      font-size: 20px;
+      font-size: 22px;
       border: none;
       border-radius: 30px;
       cursor: pointer;
@@ -176,17 +175,6 @@
       0% { transform: scale(0); opacity: 1; }
       50% { transform: scale(1.5); opacity: 0.8; }
       100% { transform: scale(0); opacity: 0; }
-    }
-
-    /* 📱 Ajustes para pantallas muy pequeñas */
-    @media (max-width: 480px) {
-      .btn-open, .btn {
-        font-size: 16px;
-        padding: 10px 22px;
-      }
-      .book-container {
-        height: 75vh;
-      }
     }
   </style>
 </head>
