@@ -17,23 +17,21 @@
       background-size: 25px 25px;
     }
 
-    /* Contenedor principal */
+    /* Contenedor inicial con sobre */
     .intro-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      height: 100%;
       opacity: 1;
       transition: opacity 0.5s ease;
     }
 
     /* Sobre */
     .envelope {
-      width: 80vw;       /* ocupa gran parte de la pantalla */
-      height: auto;
-      aspect-ratio: 4/3; /* mantiene proporción */
+      width: 60vw;       
+      max-width: 400px;
+      aspect-ratio: 4/3;
       background-image: url('4.jpg');
       background-size: contain;
       background-repeat: no-repeat;
@@ -45,10 +43,10 @@
 
     /* Botón abrir */
     .btn-open {
-      padding: 14px 32px;
+      padding: 12px 28px;
       background: linear-gradient(90deg, #b388ff, #7c4dff);
       color: white;
-      font-size: 22px;
+      font-size: 20px;
       border: none;
       border-radius: 30px;
       cursor: pointer;
@@ -62,8 +60,10 @@
 
     /* Contenedor del libro */
     .book-container {
-      width: 90vw;   /* ocupa casi todo el ancho */
-      height: 90vh;  /* ocupa casi todo el alto */
+      width: 90vw;
+      height: 70vh;
+      max-width: 700px;
+      max-height: 500px;
       perspective: 2000px;
       position: relative;
       opacity: 0;
@@ -83,71 +83,33 @@
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 1.5s ease;
     }
 
-    /* Portada */
-    .cover {
+    /* Páginas del libro (una a la vez) */
+    .page {
       position: absolute;
-      width: 50%;
+      width: 100%;
       height: 100%;
-      left: 0;
-      top: 0;
-      background-image: url("1.png");
-      background-size: contain;
+      background-size: contain;      /* ¡sin recorte! */
       background-position: center;
       background-repeat: no-repeat;
-      transform-origin: left;
-      backface-visibility: hidden;
-      z-index: 3;
-      transition: transform 1.5s ease;
       border-radius: 5px;
-    }
-
-    /* Página izquierda */
-    .page-left {
-      position: absolute;
-      width: 50%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      background-image: url("2.png");
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      transform-origin: right;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       backface-visibility: hidden;
-      transform: rotateY(0deg);
-      border-radius: 5px;
-    }
-
-    /* Página derecha */
-    .page-right {
-      position: absolute;
-      width: 50%;
-      height: 100%;
-      right: 0;
-      top: 0;
-      background-image: url("3.png");
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      transform-origin: left;
-      backface-visibility: hidden;
-      transform: rotateY(0deg);
-      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.8s ease, transform 1.2s ease;
     }
 
     /* Botón libro */
     .btn {
       position: absolute;
-      bottom: -70px;
+      bottom: -60px;
       left: 50%;
       transform: translateX(-50%);
-      padding: 14px 32px;
+      padding: 12px 28px;
       background: linear-gradient(90deg, #b388ff, #7c4dff);
       color: white;
-      font-size: 22px;
+      font-size: 20px;
       border: none;
       border-radius: 30px;
       cursor: pointer;
@@ -176,6 +138,17 @@
       50% { transform: scale(1.5); opacity: 0.8; }
       100% { transform: scale(0); opacity: 0; }
     }
+
+    /* Ajustes para pantallas pequeñas */
+    @media (max-width: 480px) {
+      .btn-open, .btn {
+        font-size: 16px;
+        padding: 10px 22px;
+      }
+      .book-container {
+        height: 75vh;
+      }
+    }
   </style>
 </head>
 <body>
@@ -189,25 +162,28 @@
 <!-- Contenedor del libro -->
 <div class="book-container" id="bookContainer">
   <div class="book" id="book">
-    <div class="cover" id="cover"></div>
-    <div class="page-left" id="pageLeft"></div>
-    <div class="page-right" id="pageRight"></div>
+    <div class="page" id="page1" style="background-image: url('1.png');"></div>
+    <div class="page" id="page2" style="background-image: url('2.png');"></div>
+    <div class="page" id="page3" style="background-image: url('3.png');"></div>
   </div>
-  <button class="btn" id="btn" onclick="toggleBook()">Siguiente</button>
+  <button class="btn" id="btn">Siguiente</button>
 </div>
 
 <script>
   const intro = document.getElementById('intro');
   const openBtn = document.getElementById('openBtn');
   const bookContainer = document.getElementById('bookContainer');
+  const btn = document.getElementById('btn');
 
-  const book = document.getElementById("book");
-  const cover = document.getElementById("cover");
-  const pageLeft = document.getElementById("pageLeft");
-  const pageRight = document.getElementById("pageRight");
-  const btn = document.getElementById("btn");
+  const pages = [
+    document.getElementById('page1'),
+    document.getElementById('page2'),
+    document.getElementById('page3')
+  ];
+  let currentPage = 0;
 
-  let isOpen = false;
+  // Inicialmente solo la primera página visible
+  pages.forEach((p,i) => p.style.opacity = i === 0 ? '1' : '0');
 
   // Mostrar libro al presionar abrir
   openBtn.addEventListener('click', () => {
@@ -215,7 +191,6 @@
     setTimeout(() => {
       intro.style.display = 'none';
       bookContainer.classList.add('show');
-
       // Chispas iniciales ✨
       for (let i = 0; i < 30; i++) {
         const sparkle = document.createElement("div");
@@ -229,33 +204,23 @@
     }, 500);
   });
 
-  function toggleBook() {
-    if (!isOpen) {
-      cover.style.transform = "rotateY(-180deg)";
-      pageLeft.style.transform = "rotateY(-10deg)";
-      pageRight.style.transform = "rotateY(10deg)";
-      isOpen = true;
-      btn.textContent = "Anterior";
+  btn.addEventListener('click', () => {
+    // Animación de pasar página
+    pages[currentPage].style.opacity = 0;
+    currentPage = (currentPage + 1) % pages.length;
+    pages[currentPage].style.opacity = 1;
 
-      // Chispas al pasar página
-      for (let i = 0; i < 25; i++) {
-        const sparkle = document.createElement("div");
-        sparkle.className = "sparkle";
-        sparkle.style.left = Math.random() * window.innerWidth + "px";
-        sparkle.style.top = Math.random() * window.innerHeight + "px";
-        sparkle.style.animationDuration = (1 + Math.random()) + "s";
-        document.body.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 2000);
-      }
-
-    } else {
-      cover.style.transform = "rotateY(0deg)";
-      pageLeft.style.transform = "rotateY(0deg)";
-      pageRight.style.transform = "rotateY(0deg)";
-      isOpen = false;
-      btn.textContent = "Siguiente";
+    // Chispas al pasar página
+    for (let i = 0; i < 25; i++) {
+      const sparkle = document.createElement("div");
+      sparkle.className = "sparkle";
+      sparkle.style.left = Math.random() * window.innerWidth + "px";
+      sparkle.style.top = Math.random() * window.innerHeight + "px";
+      sparkle.style.animationDuration = (1 + Math.random()) + "s";
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 2000);
     }
-  }
+  });
 </script>
 
 </body>
