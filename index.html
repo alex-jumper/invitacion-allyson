@@ -27,23 +27,18 @@
       transition: opacity 0.5s ease;
     }
 
-    /* Sobre gigante */
+    /* Sobre */
     .envelope {
-      width: 400px;
-      height: 300px;
+      width: 60vw;       /* más grande en móvil */
+      height: auto;
+      max-width: 400px;  /* límite en pantallas grandes */
+      aspect-ratio: 4/3;
       background-image: url('4.jpg');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
       margin-bottom: 20px;
-      transform: scale(0.8);
-      transition: transform 0.6s ease, opacity 0.6s ease;
-    }
-
-    /* Animación de apertura del sobre */
-    .envelope.opening {
-      transform: scale(0.2) translateY(-50px) rotateX(30deg);
-      opacity: 0;
+      transform: scale(1);
       transition: transform 0.6s ease, opacity 0.6s ease;
     }
 
@@ -66,8 +61,10 @@
 
     /* Contenedor del libro */
     .book-container {
-      width: 700px;
-      height: 450px;
+      width: 90vw;   /* ocupa casi todo el ancho */
+      height: 70vh;  /* proporcional a la pantalla */
+      max-width: 700px;
+      max-height: 500px;
       perspective: 2000px;
       position: relative;
       opacity: 0;
@@ -181,6 +178,16 @@
       100% { transform: scale(0); opacity: 0; }
     }
 
+    /* 📱 Ajustes para pantallas muy pequeñas */
+    @media (max-width: 480px) {
+      .btn-open, .btn {
+        font-size: 16px;
+        padding: 10px 22px;
+      }
+      .book-container {
+        height: 75vh;
+      }
+    }
   </style>
 </head>
 <body>
@@ -205,7 +212,6 @@
   const intro = document.getElementById('intro');
   const openBtn = document.getElementById('openBtn');
   const bookContainer = document.getElementById('bookContainer');
-  const envelope = document.querySelector('.envelope');
 
   const book = document.getElementById("book");
   const cover = document.getElementById("cover");
@@ -217,13 +223,9 @@
 
   // Mostrar libro al presionar abrir
   openBtn.addEventListener('click', () => {
-    // Animación de apertura del sobre
-    envelope.classList.add('opening');
-
+    intro.style.opacity = 0;
     setTimeout(() => {
-      // Ocultar intro
       intro.style.display = 'none';
-      // Mostrar libro
       bookContainer.classList.add('show');
 
       // Chispas iniciales ✨
@@ -236,7 +238,7 @@
         document.body.appendChild(sparkle);
         setTimeout(() => sparkle.remove(), 2000);
       }
-    }, 600); // espera que termine la animación del sobre
+    }, 500);
   });
 
   function toggleBook() {
