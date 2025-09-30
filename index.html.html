@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Invitación Allyson</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f8f5ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Georgia", serif;
+      overflow: hidden;
+      background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+
+    /* Contenedor principal */
+    .intro-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Sobre */
+    .envelope {
+      width: 80vw;       /* ocupa gran parte de la pantalla */
+      height: auto;
+      aspect-ratio: 4/3; /* mantiene proporción */
+      background-image: url('4.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-bottom: 20px;
+      transform: scale(1);
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    /* Botón abrir */
+    .btn-open {
+      padding: 14px 32px;
+      background: linear-gradient(90deg, #b388ff, #7c4dff);
+      color: white;
+      font-size: 22px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+
+    .btn-open:hover {
+      transform: scale(1.1);
+    }
+
+    /* Contenedor del libro */
+    .book-container {
+      width: 90vw;   /* ocupa casi todo el ancho */
+      height: 90vh;  /* ocupa casi todo el alto */
+      perspective: 2000px;
+      position: relative;
+      opacity: 0;
+      transform: scale(0.7) rotateX(20deg) rotateY(-10deg);
+      transition: opacity 1s ease, transform 1s ease;
+      display: none; /* oculto al inicio */
+    }
+
+    .book-container.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1) rotateX(0deg) rotateY(0deg);
+    }
+
+    .book {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1.5s ease;
+    }
+
+    /* Portada */
+    .cover {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-image: url("1.png");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform-origin: left;
+      backface-visibility: hidden;
+      z-index: 3;
+      transition: transform 1.5s ease;
+      border-radius: 5px;
+    }
+
+    /* Página izquierda */
+    .page-left {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-image: url("2.png");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform-origin: right;
+      backface-visibility: hidden;
+      transform: rotateY(0deg);
+      border-radius: 5px;
+    }
+
+    /* Página derecha */
+    .page-right {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      right: 0;
+      top: 0;
+      background-image: url("3.png");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform-origin: left;
+      backface-visibility: hidden;
+      transform: rotateY(0deg);
+      border-radius: 5px;
+    }
+
+    /* Botón libro */
+    .btn {
+      position: absolute;
+      bottom: -70px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 14px 32px;
+      background: linear-gradient(90deg, #b388ff, #7c4dff);
+      color: white;
+      font-size: 22px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+
+    .btn:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    /* ✨ Chispas */
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: gold;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkle 1.5s linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.8; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Pantalla inicial con sobre -->
+<div class="intro-container" id="intro">
+  <div class="envelope"></div>
+  <button class="btn-open" id="openBtn">Abrir invitación</button>
+</div>
+
+<!-- Contenedor del libro -->
+<div class="book-container" id="bookContainer">
+  <div class="book" id="book">
+    <div class="cover" id="cover"></div>
+    <div class="page-left" id="pageLeft"></div>
+    <div class="page-right" id="pageRight"></div>
+  </div>
+  <button class="btn" id="btn" onclick="toggleBook()">Siguiente</button>
+</div>
+
+<script>
+  const intro = document.getElementById('intro');
+  const openBtn = document.getElementById('openBtn');
+  const bookContainer = document.getElementById('bookContainer');
+
+  const book = document.getElementById("book");
+  const cover = document.getElementById("cover");
+  const pageLeft = document.getElementById("pageLeft");
+  const pageRight = document.getElementById("pageRight");
+  const btn = document.getElementById("btn");
+
+  let isOpen = false;
+
+  // Mostrar libro al presionar abrir
+  openBtn.addEventListener('click', () => {
+    intro.style.opacity = 0;
+    setTimeout(() => {
+      intro.style.display = 'none';
+      bookContainer.classList.add('show');
+
+      // Chispas iniciales ✨
+      for (let i = 0; i < 30; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.left = Math.random() * window.innerWidth + "px";
+        sparkle.style.top = Math.random() * window.innerHeight + "px";
+        sparkle.style.animationDuration = (1 + Math.random()) + "s";
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 2000);
+      }
+    }, 500);
+  });
+
+  function toggleBook() {
+    if (!isOpen) {
+      cover.style.transform = "rotateY(-180deg)";
+      pageLeft.style.transform = "rotateY(-10deg)";
+      pageRight.style.transform = "rotateY(10deg)";
+      isOpen = true;
+      btn.textContent = "Anterior";
+
+      // Chispas al pasar página
+      for (let i = 0; i < 25; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.left = Math.random() * window.innerWidth + "px";
+        sparkle.style.top = Math.random() * window.innerHeight + "px";
+        sparkle.style.animationDuration = (1 + Math.random()) + "s";
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 2000);
+      }
+
+    } else {
+      cover.style.transform = "rotateY(0deg)";
+      pageLeft.style.transform = "rotateY(0deg)";
+      pageRight.style.transform = "rotateY(0deg)";
+      isOpen = false;
+      btn.textContent = "Siguiente";
+    }
+  }
+</script>
+
+</body>
+</html>
