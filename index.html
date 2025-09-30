@@ -1,258 +1,223 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Invitación Allyson</title>
-  <style>
-    body {
-      margin: 0;
-      background: #f8f5ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: "Georgia", serif;
-      overflow: hidden;
-      background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-      background-size: 25px 25px;
-    }
+<meta charset="UTF-8">
+<title>Invitación Allyson</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #f8f5ff;
+    font-family: "Georgia", serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-    /* Contenedor principal */
-    .intro-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
+  body {
+    background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
 
-    /* Sobre */
-    .envelope {
-      width: 60vw;
-      height: auto;
-      max-width: 400px;
-      aspect-ratio: 4/3;
-      background-image: url('4.jpg');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      margin-bottom: 20px;
-      transform: scale(1);
-      transition: transform 0.6s ease, opacity 0.6s ease;
-    }
+  /* Pantalla inicial con sobre */
+  .intro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease;
+  }
 
-    /* Botón abrir */
-    .btn-open {
-      padding: 12px 28px;
-      background: linear-gradient(90deg, #b388ff, #7c4dff);
-      color: white;
-      font-size: 20px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transition: transform 0.3s;
-    }
+  .envelope {
+    width: 80vw;
+    max-width: 500px;
+    height: auto;
+    aspect-ratio: 4/3;
+    background-image: url('4.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 20px;
+    transition: transform 0.6s ease, opacity 0.6s ease;
+  }
 
-    .btn-open:hover {
-      transform: scale(1.1);
-    }
+  .btn-open {
+    padding: 12px 28px;
+    background: linear-gradient(90deg,#b388ff,#7c4dff);
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+    z-index: 1000;
+  }
 
-    /* Contenedor del libro */
-    .book-container {
-      width: 90vw;
-      height: 70vh;
-      max-width: 700px;
-      max-height: 500px;
-      perspective: 2000px;
-      position: relative;
-      opacity: 0;
-      transform: scale(0.7) rotateX(20deg) rotateY(-10deg);
-      transition: opacity 1s ease, transform 1s ease;
-      display: none; /* oculto al inicio */
-    }
+  .btn-open:hover {
+    transform: scale(1.1);
+  }
 
-    .book-container.show {
-      display: block;
-      opacity: 1;
-      transform: scale(1) rotateX(0deg) rotateY(0deg);
-    }
+  /* Contenedor libro */
+  .book-container {
+    width: 100vw;
+    height: 100vh;
+    perspective: 2000px;
+    position: relative;
+    display: none;
+  }
 
-    .book {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 1.5s ease;
-    }
+  .book {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+  }
 
-    /* Páginas */
-    .page {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background-size: cover;
-      background-position: center;
-      backface-visibility: hidden;
-      border-radius: 5px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transform: rotateY(0deg);
-      transition: transform 1s ease;
-    }
+  .page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transform-origin: left;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+  }
 
-    .cover { background-image: url("1.png"); z-index: 3; }
-    .page-left { background-image: url("2.png"); }
-    .page-right { background-image: url("3.png"); }
+  .btn {
+    position: absolute;
+    bottom: 20px;       /* sobre la imagen, a 20px del borde inferior */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 28px;
+    background: linear-gradient(90deg,#b388ff,#7c4dff);
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+    z-index: 1000;     /* asegurar que esté sobre la imagen */
+  }
 
-    /* Botón libro */
-    .btn {
-      position: absolute;
-      bottom: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 28px;
-      background: linear-gradient(90deg, #b388ff, #7c4dff);
-      color: white;
-      font-size: 20px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transition: transform 0.3s;
-      z-index: 5;
-    }
+  .btn:hover {
+    transform: translateX(-50%) scale(1.1);
+  }
 
-    .btn:hover {
-      transform: translateX(-50%) scale(1.1);
-    }
+  .sparkle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: gold;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkle 1.5s linear infinite;
+    opacity: 0;
+  }
 
-    /* ✨ Chispas */
-    .sparkle {
-      position: absolute;
-      width: 5px;
-      height: 5px;
-      background: gold;
-      border-radius: 50%;
-      pointer-events: none;
-      animation: sparkle 1.5s linear infinite;
-      opacity: 0;
-    }
-
-    @keyframes sparkle {
-      0% { transform: scale(0); opacity: 1; }
-      50% { transform: scale(1.5); opacity: 0.8; }
-      100% { transform: scale(0); opacity: 0; }
-    }
-
-    /* 📱 Ajustes para móviles */
-    @media (max-width: 768px) {
-      .book-container {
-        width: 100vw;
-        height: 100vh;
-        max-width: none;
-        max-height: none;
-      }
-      .page {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-        box-shadow: none;
-      }
-      .btn {
-        font-size: 18px;
-        padding: 12px 24px;
-        bottom: 20px;
-      }
-      .intro-container {
-        width: 100vw;
-        height: 100vh;
-      }
-      .envelope {
-        width: 90vw;
-        max-width: none;
-        aspect-ratio: 4/3;
-      }
-    }
-  </style>
+  @keyframes sparkle {
+    0% { transform: scale(0); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.8; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+</style>
 </head>
 <body>
 
-<!-- Pantalla inicial con sobre -->
+<!-- Sobre -->
 <div class="intro-container" id="intro">
   <div class="envelope"></div>
   <button class="btn-open" id="openBtn">Abrir invitación</button>
 </div>
 
-<!-- Contenedor del libro -->
+<!-- Libro -->
 <div class="book-container" id="bookContainer">
   <div class="book" id="book">
-    <div class="page cover" id="cover"></div>
-    <div class="page page-left" id="pageLeft"></div>
-    <div class="page page-right" id="pageRight"></div>
+    <div class="page" style="background-image:url('1.png')"></div>
+    <div class="page" style="background-image:url('2.png')"></div>
+    <div class="page" style="background-image:url('3.png')"></div>
   </div>
-  <button class="btn" id="btn" onclick="toggleBook()">Siguiente</button>
+  <button class="btn" id="btn">Siguiente</button>
 </div>
 
 <script>
-  const intro = document.getElementById('intro');
-  const openBtn = document.getElementById('openBtn');
-  const bookContainer = document.getElementById('bookContainer');
+const intro = document.getElementById('intro');
+const openBtn = document.getElementById('openBtn');
+const bookContainer = document.getElementById('bookContainer');
+const book = document.getElementById('book');
+const pages = Array.from(book.getElementsByClassName('page'));
+const btn = document.getElementById('btn');
 
-  const book = document.getElementById("book");
-  const cover = document.getElementById("cover");
-  const pageLeft = document.getElementById("pageLeft");
-  const pageRight = document.getElementById("pageRight");
-  const btn = document.getElementById("btn");
+let currentPage = 0;
 
-  let isOpen = false;
+// Mostrar libro
+openBtn.addEventListener('click', () => {
+  intro.style.opacity = 0;
+  setTimeout(() => {
+    intro.style.display = 'none';
+    bookContainer.style.display = 'block';
 
-  // Mostrar libro al presionar abrir
-  openBtn.addEventListener('click', () => {
-    intro.style.opacity = 0;
-    setTimeout(() => {
-      intro.style.display = 'none';
-      bookContainer.classList.add('show');
+    // Mostrar primera página
+    pages.forEach((p,i) => {
+      p.style.transition = "transform 0.8s ease";
+      p.style.transform = i === 0 ? "rotateY(0deg)" : "rotateY(180deg)";
+      p.style.zIndex = pages.length - i;
+    });
 
-      // Chispas iniciales ✨
-      for (let i = 0; i < 30; i++) {
-        const sparkle = document.createElement("div");
-        sparkle.className = "sparkle";
-        sparkle.style.left = Math.random() * window.innerWidth + "px";
-        sparkle.style.top = Math.random() * window.innerHeight + "px";
-        sparkle.style.animationDuration = (1 + Math.random()) + "s";
-        document.body.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 2000);
-      }
-    }, 500);
-  });
-
-  function toggleBook() {
-    if (!isOpen) {
-      cover.style.transform = "rotateY(-180deg)";
-      setTimeout(() => { pageLeft.style.transform = "rotateY(0deg)"; }, 400);
-      isOpen = true;
-      btn.textContent = "Anterior";
-
-      for (let i = 0; i < 25; i++) {
-        const sparkle = document.createElement("div");
-        sparkle.className = "sparkle";
-        sparkle.style.left = Math.random() * window.innerWidth + "px";
-        sparkle.style.top = Math.random() * window.innerHeight + "px";
-        sparkle.style.animationDuration = (1 + Math.random()) + "s";
-        document.body.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 2000);
-      }
-
-    } else {
-      pageLeft.style.transform = "rotateY(-180deg)";
-      setTimeout(() => { cover.style.transform = "rotateY(0deg)"; }, 400);
-      isOpen = false;
-      btn.textContent = "Siguiente";
+    // Chispas
+    for (let i = 0; i < 30; i++) {
+      const sparkle = document.createElement("div");
+      sparkle.className = "sparkle";
+      sparkle.style.left = Math.random() * window.innerWidth + "px";
+      sparkle.style.top = Math.random() * window.innerHeight + "px";
+      sparkle.style.animationDuration = (1 + Math.random()) + "s";
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 2000);
     }
+  },500);
+});
+
+// Pasar página
+btn.addEventListener('click', () => {
+  if(currentPage < pages.length - 1) {
+    const page = pages[currentPage];
+    const nextPage = pages[currentPage+1];
+
+    nextPage.style.transform = "rotateY(0deg)";
+    nextPage.style.zIndex = pages.length;
+
+    page.style.transform = "rotateY(-180deg)";
+    page.style.zIndex = pages.length - currentPage - 1;
+
+    currentPage++;
+
+    for (let i = 0; i < 15; i++) {
+      const sparkle = document.createElement("div");
+      sparkle.className = "sparkle";
+      sparkle.style.left = Math.random() * window.innerWidth + "px";
+      sparkle.style.top = Math.random() * window.innerHeight + "px";
+      sparkle.style.animationDuration = (0.8 + Math.random()) + "s";
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 2000);
+    }
+  } else {
+    // Reiniciar
+    pages.forEach((p,i)=>{
+      p.style.transform = i===0?"rotateY(0deg)":"rotateY(180deg)";
+      p.style.zIndex = pages.length - i;
+    });
+    currentPage = 0;
   }
+});
 </script>
 
 </body>
