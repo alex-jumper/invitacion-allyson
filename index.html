@@ -57,6 +57,7 @@
     color: white;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     animation: pulse 1.2s infinite;
+    z-index: 100;
   }
 
   @keyframes pulse {
@@ -91,6 +92,8 @@
     transform-origin: left;
     backface-visibility: hidden;
     transform: rotateY(180deg);
+    transition: transform 0.8s ease;
+    z-index: 1;
   }
 
   .btn {
@@ -98,8 +101,8 @@
     bottom: 8%;
     left: 50%;
     transform: translateX(-50%);
-    padding: 16px 32px;
-    font-size: 22px;
+    padding: 18px 36px;
+    font-size: 24px;
     border: none;
     border-radius: 30px;
     cursor: pointer;
@@ -126,15 +129,33 @@
     50% { transform: scale(1.5); opacity: 0.8; }
     100% { transform: scale(0); opacity: 0; }
   }
+
+  .butterfly {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-image: url('mariposa.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 150;
+    opacity: 0;
+  }
 </style>
 </head>
 <body>
 
+<!-- Audio -->
+<audio id="popSound" src="pop.mp3"></audio>
+<audio id="bgMusic" src="musica.mp3" loop></audio>
+
+<!-- Sobre -->
 <div class="intro-container" id="intro">
   <div class="envelope"></div>
   <button class="btn-open" id="openBtn">Abrir invitación</button>
 </div>
 
+<!-- Libro -->
 <div class="book-container" id="bookContainer">
   <div class="book" id="book">
     <div class="page" style="background-image:url('1.png')"></div>
@@ -154,34 +175,83 @@ const btn = document.getElementById('btn');
 
 let currentPage = 0;
 
-// Mostrar libro
+// Crear mariposa con trayectoria curva hacia el centro
+function createButterflyCurve() {
+  const butterfly = document.createElement("div");
+  butterfly.className = "butterfly";
+
+  const edge = Math.floor(Math.random()*4);
+  let startX, startY;
+  if(edge === 0){ startX = Math.random()*window.innerWidth; startY = -50; }
+  else if(edge === 1){ startX = Math.random()*window.innerWidth; startY = window.innerHeight + 50; }
+  else if(edge === 2){ startX = -50; startY = Math.random()*window.innerHeight; }
+  else { startX = window.innerWidth+50; startY = Math.random()*window.innerHeight; }
+
+  butterfly.style.left = startX + "px";
+  butterfly.style.top = startY + "px";
+  butterfly.style.opacity = 1;
+  document.body.appendChild(butterfly);
+
+  const centerX = window.innerWidth/2 - 20;
+  const centerY = window.innerHeight/2 - 20;
+
+  const controlX = startX + (centerX - startX)/2 + (Math.random()*200 - 100);
+  const controlY = startY + (centerY - startY)/2 + (Math.random()*200 - 100);
+
+  let start = null;
+  const duration = 2200;
+
+  function animateButterfly(timestamp){
+    if(!start) start = timestamp;
+    let progress = (timestamp - start)/duration;
+    if(progress > 1) progress = 1;
+
+    const x = (1-progress)*(1-progress)*startX + 2*(1-progress)*progress*controlX + progress*progress*centerX;
+    const y = (1-progress)*(1-progress)*startY + 2*(1-progress)*progress*controlY + progress*progress*centerY;
+    butterfly.style.left = x + "px";
+    butterfly.style.top = y + "px";
+    butterfly.style.transform = `rotate(${progress*360}deg)`;
+    butterfly.style.opacity = 1 - progress;
+
+    if(progress < 1){
+      requestAnimationFrame(animateButterfly);
+    } else {
+      butterfly.remove();
+    }
+  }
+
+  requestAnimationFrame(animateButterfly);
+}
+
+// Abrir libro
 openBtn.addEventListener('click', () => {
+  const popSound = document.getElementById('popSound');
+  popSound.currentTime = 0;
+  popSound.play();
+
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volume = 0.5;
+  bgMusic.play();
+
   intro.style.opacity = 0;
   setTimeout(() => {
     intro.style.display = 'none';
     bookContainer.style.display = 'block';
 
     pages.forEach((p,i) => {
-      p.style.transition = "transform 0.8s ease";
       p.style.transform = i === 0 ? "rotateY(0deg)" : "rotateY(180deg)";
       p.style.zIndex = pages.length - i;
     });
 
-    for (let i = 0; i < 30; i++) {
-      const sparkle = document.createElement("div");
-      sparkle.className = "sparkle";
-      sparkle.style.left = Math.random() * window.innerWidth + "px";
-      sparkle.style.top = Math.random() * window.innerHeight + "px";
-      sparkle.style.animationDuration = (1 + Math.random()) + "s";
-      document.body.appendChild(sparkle);
-      setTimeout(() => sparkle.remove(), 2000);
+    for(let i=0;i<30;i++){
+      setTimeout(createButterflyCurve, i*100);
     }
   },500);
 });
 
 // Pasar página
 btn.addEventListener('click', () => {
-  if(currentPage < pages.length - 1) {
+  if(currentPage < pages.length - 1){
     const page = pages[currentPage];
     const nextPage = pages[currentPage+1];
 
