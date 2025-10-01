@@ -80,12 +80,17 @@
     transform-origin: left;
     backface-visibility: hidden;
     transform: rotateY(180deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .page img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
     display: block;
   }
+
   .btn {
     position: absolute;
     bottom: 8%;
@@ -129,6 +134,13 @@
     50% { transform: scale(1.5); opacity: 0.8; }
     100% { transform: scale(0); opacity: 0; }
   }
+
+  /* Hotspots */
+  .hotspot {
+    position: absolute;
+    cursor: pointer;
+    background: rgba(255,0,0,0); /* invisible pero clickeable */
+  }
 </style>
 </head>
 <body>
@@ -140,34 +152,23 @@
 
 <div class="book-container" id="bookContainer">
   <div class="book" id="book">
-
-    <!-- Página 1 -->
-    <div class="page" id="page1" style="position: relative; display: inline-block; width: 100%; max-width: 800px; margin: 0 auto;">
-      <img src="1.png" alt="Página 1">
-    </div>
-
-    <!-- Página 2 -->
-    <div class="page" id="page2" style="position: relative; display: inline-block; width: 100%; max-width: 800px; margin: 0 auto;">
-      <img src="2.png" alt="Página 2">
-    </div>
-
-    <!-- Página 3 -->
-    <div class="page" id="page3" style="position: relative; display: inline-block; width: 100%; max-width: 800px; margin: 0 auto;">
+    <div class="page"><img src="1.png" alt="Página 1"></div>
+    <div class="page"><img src="2.png" alt="Página 2"></div>
+    <div class="page" id="page3">
       <img src="3.png" alt="Página 3">
-
+      
       <!-- Hotspot 1: Iglesia -->
       <div class="hotspot"
-           style="position:absolute; left:15%; top:35%; width:75%; height:15%; cursor:pointer;"
-           onclick="window.open('https://www.google.com/maps/place/Parroquia+San+Juan+Bautista','_blank')">
+           style="left:15%; top:35%; width:75%; height:15%;"
+           onclick="window.open('https://www.google.com/maps/place/Parroquia+San+Juan+Bautista/@19.9573373,-98.9248044,17z')">
       </div>
 
       <!-- Hotspot 2: Salón -->
       <div class="hotspot"
-           style="position:absolute; left:20%; top:65%; width:60%; height:12%; cursor:pointer;"
-           onclick="window.open('https://www.google.com/maps/place/La+herradura.fam.V.H.','_blank')">
+           style="left:20%; top:65%; width:60%; height:12%;"
+           onclick="window.open('https://www.google.com/maps/place/La+herradura.fam.V.H./@19.9660028,-98.92594,17z')">
       </div>
     </div>
-
   </div>
   <button class="btn" id="btn">Siguiente</button>
 </div>
@@ -201,7 +202,6 @@ openBtn.addEventListener('click', () => {
       p.style.zIndex = pages.length - i;
     });
 
-    // Reproducir música
     audio.play();
 
     // Chispas
@@ -215,7 +215,7 @@ openBtn.addEventListener('click', () => {
       setTimeout(()=>sparkle.remove(),2000);
     }
 
-    // Mariposas que vuelan de abajo hacia arriba y desaparecen
+    // Mariposas
     const butterflyContainer = document.body;
     for(let i=0;i<25;i++){
       const butterfly=document.createElement('div');
@@ -269,7 +269,7 @@ btn.addEventListener('click', () => {
       setTimeout(()=>sparkle.remove(),2000);
     }
 
-  }else{
+  } else {
     pages.forEach((p,i)=>{
       p.style.transform=i===0?"rotateY(0deg)":"rotateY(180deg)";
       p.style.zIndex=pages.length-i;
